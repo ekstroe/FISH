@@ -8,8 +8,6 @@ Part that moves fish tail
 
 Part that moves fish mouth
 
-![image](https://github.com/user-attachments/assets/827f7fab-2650-4374-98f7-23010b85268d)
 
 Schematic
 
-![image](https://github.com/user-attachments/assets/291c0876-8245-4563-80a8-58841f98bf17)
