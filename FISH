@@ -1,0 +1,110 @@
+#include <Servo.h>
+Servo servo1;
+
+typedef struct song {
+  long long timePTR[20];
+  int durPTR[20];
+  int checker;
+
+} SONG;
+
+//tester song, Twinkle twinkle little star.
+SONG TwinkleTwinkle = {
+  { 200 , 1200, 2200 , 3200 , 4200 , 5200 , 6200 } ,
+  { 600 , 600 , 600 , 600 , 600, 600, 1400 },
+  7
+};
+
+int ServoPin = 9;
+int GreenPin = 2;
+int RedPin = 3;
+int ButtonPin = 7; //pulled down
+
+bool Pushed = false;
+long long startTime = 0;
+long long* startTimePTR = &startTime;
+int checker = 0;
+
+
+
+void setup() {
+  // put your setup code here, to run once:
+  servo1.attach(ServoPin);
+  pinMode(RedPin, OUTPUT);
+  pinMode(GreenPin, OUTPUT);
+  pinMode(ButtonPin, INPUT);
+  digitalWrite(RedPin, HIGH);
+  /*SERVOTEST
+  for(int i = 0; i < 5; i++){
+    servo1.write(30*i);
+    delay(1000);
+  }
+  */
+  Serial.begin(9600);
+  Serial.println("Starting FISH...");
+  digitalWrite(RedPin, LOW);
+  digitalWrite(GreenPin, HIGH);
+}
+
+// function for opening mouth top and bottom values are changeable 
+void openMouth(long long arg, Servo serv){
+  int top = 75;
+  int bottom = 120;
+  serv.write(bottom);
+  long long start = millis();
+  while ( ((millis() - start) < arg) ){
+    //do Nothing
+  }
+  serv.write(top);
+}
+
+void loop() {
+  // green light on until button is pushed, then the fish is on and can start singing
+  // BUTTON TO BE PUSHED AT THE SAME TIME AS THE SONG IS STARTED : VER 1
+  // then both lights off
+  int buttonState = digitalRead(ButtonPin);
+  if ((Pushed == false) && (buttonState == LOW)){
+    digitalWrite(GreenPin, HIGH);
+  }
+  // scan for buttonpush:
+  if ((Pushed == false) && (buttonState == HIGH)){
+    //turn off lights
+    digitalWrite(GreenPin, LOW);
+    Pushed = true;
+    //get starttime
+    *startTimePTR = millis();
+    Serial.println("HELLO!");
+  }
+  
+  /*
+  TESTER
+  if (Pushed == true){
+    for(int i = 0; i < 5; i++){
+    servo1.write(30*i);
+    int start = millis();
+    while (millis() - start < 1000){
+      //doNothing
+    }
+  }
+  int prt = millis() - *startTimePTR;
+  Serial.println(prt);
+  exit(0);
+  }
+  */
+
+
+  int prt = millis() - *startTimePTR;
+  Serial.println(prt);
+
+  // normal control loop to check if mouth should be opened : 
+  if ((Pushed == true) && (millis() - *startTimePTR > TwinkleTwinkle.timePTR[checker])){
+    openMouth(TwinkleTwinkle.durPTR[checker], servo1);
+    checker++;
+    if (checker == TwinkleTwinkle.checker){
+      Pushed = false;
+      checker = 0;
+    }
+  }
+
+  // put your main code here, to run repeatedly:
+}
