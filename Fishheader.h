@@ -23,7 +23,7 @@ struct song {
 	ss ss ss
 	ex: 01 15
 
-  end of the lines defined with -1
+ 
 	*/
 	long long* song; //dynamically allocated
 	int* mtime; //dynamically allocated
